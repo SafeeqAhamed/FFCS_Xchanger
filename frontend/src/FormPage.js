@@ -31,33 +31,35 @@ const handleLogout = () =>
   };
 //_________________________________________________________________________________________________
   //This runs when the user submits a form. It sends new data to the backend
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    //POST request to your backend (http://localhost:5000/api/content) with some form data.
-    const res = await fetch('http://localhost:5000/api/auth/content', {      //	The backend endpoint URL
-                                                                method: 'POST',      //send data to the server
-                                                                headers: {           //sending something like JSON data and includes an auth token
-                                                                        'Content-Type': 'application/json',         
-                                                                        'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 include token-proves user loggein and has permissions to gp data
-                                                                        },
-                                                                body: JSON.stringify(formData),   //form data object into a JSON string
-                                                                }                                 //back-req.body
-                           );                                 
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const newData = await res.json();         //back->res.status(201).json(savedContent);   
-    setRequests([newData, ...requests]);  //display without refreshing
+  // ✅ Use deployed backend URL (not localhost)
+  const res = await fetch('https://ffcs-xchanger-v8b8.onrender.com/api/auth/content', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 Auth token
+    },
+    body: JSON.stringify(formData),
+  });
 
-    setFormData({
-      name: '',
-      email: '',
-      department: '',
-      subject: '',
-      currentFaculty: '',
-      currentSlot: '',
-      desiredFaculty: '',
-      desiredSlot: '',
-    });
-  };
+  const newData = await res.json(); // 🟢 New content returned from backend
+  setRequests([newData, ...requests]); // 🖼️ Show new data in UI immediately
+
+  // 🔄 Clear the form after submission
+  setFormData({
+    name: '',
+    email: '',
+    department: '',
+    subject: '',
+    currentFaculty: '',
+    currentSlot: '',
+    desiredFaculty: '',
+    desiredSlot: '',
+  });
+};
+
 //___________________________________________________________________________________
 //This runs automatically when the page loads. It fetches all data already submitted.
   useEffect(() => { 
