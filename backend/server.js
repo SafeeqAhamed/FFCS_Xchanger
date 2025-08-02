@@ -27,15 +27,7 @@ mongoose.connect(mongoURI, {
 .then(() => console.log('MongoDB Connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Serve frontend only in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-  // Use a catch-all route with a regular expression
-  app.get(/^(?!.*\/api\/).*$/, (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-  });
-}
 
 // Start the server
 const PORT = process.env.PORT || 5000;
