@@ -38,8 +38,7 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-
-const path = require("path");
+ 
 
 // Serve frontend **only in production**
 if (process.env.NODE_ENV === "production") {
