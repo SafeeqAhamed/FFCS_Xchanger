@@ -16,40 +16,42 @@ function Signup() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {        //event
-    e.preventDefault();         //	Stops the page from reloading on form submit
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
 
-    // 🔒 Validation
-    if (!form.email.endsWith('@vitstudent.ac.in')) 
-                  {return setError('Only VIT student emails are allowed.');}
+  if (!form.email.endsWith('@vitstudent.ac.in')) {
+    return setError('Only VIT student emails are allowed.');
+  }
 
-    if (form.password !== form.confirmPassword) 
-                   {return setError('Passwords do not match.');}
- 
-    try {            //Sends a POST request to backend URL (/register endpoint).
-          const res = await fetch('https://ffcs-xchanger-v8b8.onrender.com/api/auth/register',          
-                                  {method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify
-                                        ({email: form.email,
-                                        password: form.password,}
-                                        ),
-                                  }
-                                );
+  if (form.password !== form.confirmPassword) {
+    return setError('Passwords do not match.');
+  }
 
-          const data = await res.json();   // response data in JSON format and saving it
+  try {
+    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+      }),
+    });
 
-          if (!res.ok)  //200-true , 400-false
-              {setError(data.error || 'Registration failed.');}
-          else 
-              {alert('Registration successful! Please login.');
-              navigate('/login');}
-          
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || 'Registration failed.');
+    } else {
+      alert('Registration successful! Please login.');
+      navigate('/login');
     }
-  };
+
+  } catch (err) {
+    setError('Something went wrong. Please try again.');
+  }
+};
+
 
   return (
     <div className="container" style={{ maxWidth: '400px', margin: 'auto', padding: '20px' }}>

@@ -8,39 +8,39 @@ function Login({ onLogin }) {
   const [error, setError] = useState('');
   const navigate = useNavigate(); // ← Initialize navigate
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // ✅ Validate VIT email
-    if (!email.endsWith('@vitstudent.ac.in')) {
-      setError('Only VIT student emails are allowed.');
-      return;
+  if (!email.endsWith('@vitstudent.ac.in')) {
+    setError('Only VIT student emails are allowed.');
+    return;
+  }
+
+  try {
+    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      localStorage.setItem('token', data.token);
+      console.log("Token saved, logging in...");
+      onLogin();
+      navigate('/form');
+    } else {
+      setError(data.error || 'Login failed');
+      console.log("Login error:", data.error);
     }
 
-    try {                       //req ula poi 
-      const res = await fetch('https://ffcs-xchanger-v8b8.onrender.com/api/auth/login', {
-        method: 'POST',                        // sending data 
-        headers: { 'Content-Type': 'application/json' },  //we tell the backend: “I’m sending JSON data (not form or plain text).”
-        body: JSON.stringify({ email, password }), //convert the email and password into a JSON string
-      });
+  } catch (err) {
+    console.error(err);
+    setError('Server error. Try again later.');
+  }
+};
 
-      const data = await res.json(); //raw text to a JavaScript object (data
-
-      if (res.ok) {
-                localStorage.setItem('token', data.token);
-                console.log("Token saved, logging in...");
-                onLogin();
-                navigate('/form'); // ← Redirect to form page
-                 } 
-      else                                               //❌ If fail: shows error.
-        {setError(data.error || 'Login failed');
-        console.log("Login error:", data.error);}
-
-    } catch (err) 
-        {console.error(err);
-        setError('Server error. Try again later.');}   //⚠️ If server crashes: shows server error.  
-    
-  };
 
    const goToSignup = () => {
     navigate('/signup'); // 🔀 redirect to signup page
