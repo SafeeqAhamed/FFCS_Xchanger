@@ -34,7 +34,7 @@ const handleLogout = () =>
   const handleSubmit = async (e) => {
     e.preventDefault();
     //POST request to your backend (http://localhost:5000/api/content) with some form data.
-    const res = await fetch('http://localhost:5000/api/content', {      //	The backend endpoint URL
+    const res = await fetch('http://localhost:5000/api/auth/content', {      //	The backend endpoint URL
                                                                 method: 'POST',      //send data to the server
                                                                 headers: {           //sending something like JSON data and includes an auth token
                                                                         'Content-Type': 'application/json',         
