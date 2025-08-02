@@ -1,30 +1,42 @@
-const express = require('express');  //Framework to build APIs
-const mongoose = require('mongoose'); //Connects your app to MongoDB
-const cors = require('cors'); //Allows your backend to accept requests from a different domain
-require('dotenv').config(); //Lets you use .env file to hide sensitive info (like DB password, JWT secret)
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const path = require('path');
+require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
-const contentRoutes = require('./routes/content'); // add this
+const contentRoutes = require('./routes/content');
 
-const app = express(); //Starts your Express application — like creating your backend server.
+const app = express();
 
-app.use(cors());  //	Allows frontend (like React app on different port) to talk to backend
-app.use(express.json()); //	Parses JSON body in incoming requests (so you can use req.body)
+app.use(cors());
+app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/content', contentRoutes); // add this
+app.use('/api/content', contentRoutes);
 
 const mongoURI = process.env.MONGO_URI;
 
-mongoose.connect(mongoURI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB connection error:', err));
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB Connected'))
+.catch(err => console.error('MongoDB connection error:', err));
+
+// ✅ Serve frontend **only in production**
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
 
 
 const path = require("path");
