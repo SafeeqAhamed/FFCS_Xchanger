@@ -29,9 +29,11 @@ app.listen(PORT, () => {
 
 const path = require("path");
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// Serve frontend **only in production**
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
-});
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/build/index.html"));
+  });
+}
