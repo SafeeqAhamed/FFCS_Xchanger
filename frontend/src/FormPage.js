@@ -31,33 +31,45 @@ const handleLogout = () =>
   };
 //_________________________________________________________________________________________________
   //This runs when the user submits a form. It sends new data to the backend
- const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
+  console.log("Submitting form with data:", formData);
 
-  // ✅ Use deployed backend URL (not localhost)
-  const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 Auth token
-    },
-    body: JSON.stringify(formData),
-  });
+  try {
+    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify(formData),
+    });
 
-  const newData = await res.json(); // 🟢 New content returned from backend
-  setRequests([newData, ...requests]); // 🖼️ Show new data in UI immediately
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("Error submitting form:", error.message);
+      alert("Submission failed: " + error.message);
+      return;
+    }
 
-  // 🔄 Clear the form after submission
-  setFormData({
-    name: '',
-    email: '',
-    department: '',
-    subject: '',
-    currentFaculty: '',
-    currentSlot: '',
-    desiredFaculty: '',
-    desiredSlot: '',
-  });
+    const newData = await res.json();
+    console.log("Submitted successfully:", newData);
+
+    setRequests([newData, ...requests]);
+    setFormData({
+      name: '',
+      email: '',
+      department: '',
+      subject: '',
+      currentFaculty: '',
+      currentSlot: '',
+      desiredFaculty: '',
+      desiredSlot: '',
+    });
+  } catch (err) {
+    console.error("Network error:", err);
+    alert("Server not reachable or down.");
+  }
 };
 
 //___________________________________________________________________________________
