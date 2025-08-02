@@ -35,7 +35,7 @@ const handleLogout = () =>
   e.preventDefault();
 
   // ✅ Use deployed backend URL (not localhost)
-  const res = await fetch('https://ffcs-xchanger-v8b8.onrender.com/api/auth/content', {
+  const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const handleLogout = () =>
 //___________________________________________________________________________________
 //This runs automatically when the page loads. It fetches all data already submitted.
   useEffect(() => { 
-    fetch('https://ffcs-xchanger-v8b8.onrender.com/api/auth/content', {         //	Sends a GET request to backend to fetch all submitted form data
+    fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {         //	Sends a GET request to backend to fetch all submitted form data
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 include token
       },                  //"Bearer" is a standard way to send tokens in APIs.
