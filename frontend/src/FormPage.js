@@ -30,7 +30,6 @@ const handleLogout = () =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 //_________________________________________________________________________________________________
-  //This runs when the user submits a form. It sends new data to the backend
 const handleSubmit = async (e) => {
   e.preventDefault();
   console.log("Submitting form with data:", formData);
@@ -66,11 +65,15 @@ const handleSubmit = async (e) => {
       desiredFaculty: '',
       desiredSlot: '',
     });
+
+    setMessage("✅ Successfully added!");
+    setTimeout(() => setMessage(''), 3000);
   } catch (err) {
     console.error("Network error:", err);
     alert("Server not reachable or down.");
   }
 };
+
 
 //___________________________________________________________________________________
 //This runs automatically when the page loads. It fetches all data already submitted.
