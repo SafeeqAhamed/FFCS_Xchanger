@@ -36,7 +36,7 @@ const handleSubmit = async (e) => {
   console.log("Submitting form with data:", formData);
 
   try {
-    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {
+    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/content', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const handleSubmit = async (e) => {
 //___________________________________________________________________________________
 //This runs automatically when the page loads. It fetches all data already submitted.
   useEffect(() => { 
-    fetch('https://ffcs-xchanger-1.onrender.com/api/auth/content', {         //	Sends a GET request to backend to fetch all submitted form data
+    fetch('https://ffcs-xchanger-1.onrender.com/api/content', {         //	Sends a GET request to backend to fetch all submitted form data
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 include token
       },                  //"Bearer" is a standard way to send tokens in APIs.
