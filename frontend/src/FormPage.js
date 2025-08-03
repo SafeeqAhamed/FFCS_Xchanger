@@ -19,6 +19,7 @@ function FormPage() {
     desiredSlot: '',
   });
 
+const [message, setMessage] = useState('');  
 const [requests, setRequests] = useState([]);
 const navigate = useNavigate();
 const handleLogout = () => 
