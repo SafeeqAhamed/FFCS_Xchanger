@@ -1,11 +1,6 @@
-import React, { useState, useEffect } from 'react';  //store and update values (like variables).
-                                            //run code when the component loads or when something changes.
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-                                      //move (navigate) to a different page using code
 import './App.css';
-
-
-
 
 function FormPage() {
   const [formData, setFormData] = useState({
@@ -19,93 +14,88 @@ function FormPage() {
     desiredSlot: '',
   });
 
-const [message, setMessage] = useState('');  
-const [requests, setRequests] = useState([]);
-const navigate = useNavigate();
-const handleLogout = () => 
-          {localStorage.removeItem('token');
-          navigate('/login');};
+  
+  const [requests, setRequests] = useState([]);
+  const [selectedDept, setSelectedDept] = useState('');
+  const navigate = useNavigate();
 
+  const departments = ['CSE', 'ECE', 'ECM', 'AIDS', 'AIML', 'IT', 'EEE', 'Mech', 'Civil'];
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-//_________________________________________________________________________________________________
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log("Submitting form with data:", formData);
 
-  try {
-    const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/content', {
-      method: 'POST',
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log("Submitting form with data:", formData);
+
+    try {
+      const res = await fetch('https://ffcs-xchanger-1.onrender.com/api/content', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        console.error("Error submitting form:", error.message);
+        alert("Submission failed: " + error.message);
+        return;
+      }
+
+      const newData = await res.json();
+      console.log("Submitted successfully:", newData);
+
+      setRequests([newData, ...requests]);
+      setFormData({
+        name: '',
+        email: '',
+        department: '',
+        subject: '',
+        currentFaculty: '',
+        currentSlot: '',
+        desiredFaculty: '',
+        desiredSlot: '',
+      });
+
+      alert("✅ Successfully added!");
+      window.alert("Submission successful!");
+    } catch (err) {
+      console.error("Network error:", err);
+      alert("Server not reachable or down.");
+    }
+  };
+
+  useEffect(() => {
+    fetch('https://ffcs-xchanger-1.onrender.com/api/content', {
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
       },
-      body: JSON.stringify(formData),
-    });
-
-    if (!res.ok) {
-      const error = await res.json();
-      console.error("Error submitting form:", error.message);
-      alert("Submission failed: " + error.message);
-      return;
-    }
-
-    const newData = await res.json();
-    console.log("Submitted successfully:", newData);
-
-    setRequests([newData, ...requests]);
-    setFormData({
-      name: '',
-      email: '',
-      department: '',
-      subject: '',
-      currentFaculty: '',
-      currentSlot: '',
-      desiredFaculty: '',
-      desiredSlot: '',
-    });
-
-    setMessage("✅ Successfully added!");
-    setTimeout(() => setMessage(''), 3000);
-  } catch (err) {
-    console.error("Network error:", err);
-    alert("Server not reachable or down.");
-  }
-};
-
-
-//___________________________________________________________________________________
-//This runs automatically when the page loads. It fetches all data already submitted.
-  useEffect(() => { 
-    fetch('https://ffcs-xchanger-1.onrender.com/api/content', {         //	Sends a GET request to backend to fetch all submitted form data
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`, // 🔒 include token
-      },                  //"Bearer" is a standard way to send tokens in APIs.
     })
-      .then((res) => res.json())            //Converts the response into JSON format and stored in (data)
-      .then((data) => setRequests(data))           //Stores the fetched data into Requests
-      .catch((err) => console.error(err));        
+      .then((res) => res.json())
+      .then((data) => setRequests(data))
+      .catch((err) => console.error(err));
   }, []);
-//___________________________________________________________________________________
 
-const [selectedDept, setSelectedDept] = useState('');
-
-const filteredRequests = selectedDept
-  ? requests.filter((r) => r.department === selectedDept)
-  : [];
-
-const departments = ['CSE', 'ECE', 'ECM', 'AIDS', 'AIML', 'IT', 'EEE', 'Mech', 'Civil'];
-
+  const filteredRequests = selectedDept
+    ? requests.filter((r) => r.department === selectedDept)
+    : [];
 
   return (
     <div className="container" style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
       <button onClick={handleLogout} style={{ float: 'right', marginBottom: '10px' }}>
-       Logout
-       </button>
+        Logout
+      </button>
       <h2>Faculty Slot Change Request</h2>
-      <form onSubmit={handleSubmit}>                    {/* formdata update*/}
+      <form onSubmit={handleSubmit}>
         <input name="name" value={formData.name} onChange={handleChange} placeholder="Student Name" required />
         <input name="email" value={formData.email} onChange={handleChange} placeholder="Contact Email" type="email" required />
         <input name="department" value={formData.department} onChange={handleChange} placeholder="Department" required />
@@ -117,43 +107,44 @@ const departments = ['CSE', 'ECE', 'ECM', 'AIDS', 'AIML', 'IT', 'EEE', 'Mech', '
         <button type="submit" style={{ marginTop: '10px' }}>Submit</button>
       </form>
 
-     <div>
-  <h3 style={{ marginTop: '30px' }}>Submitted Requests</h3>
+      
 
-  <label htmlFor="dept-select">Select Department: </label>
-  <select
-    id="dept-select"
-    value={selectedDept}
-    onChange={(e) => setSelectedDept(e.target.value)}
-    style={{ marginBottom: '20px' }}
-  >
-    <option value="">--Choose Department--</option>
-    {departments.map((dept) => (
-      <option key={dept} value={dept}>{dept}</option>
-    ))}
-  </select>
+      <div>
+        <h3 style={{ marginTop: '30px' }}>Submitted Requests</h3>
 
-  {selectedDept && (
-    <>
-      <h4>{selectedDept} Department Requests</h4>
-      <ul>
-        {filteredRequests.length === 0 ? (
-          <li>No requests yet in {selectedDept}</li>
-        ) : (
-          filteredRequests.map((r) => (
-            <li key={r._id} style={{ marginBottom: '15px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
-              <strong>{r.name}</strong> ({r.email})<br />
-              Subject: {r.subject}<br />
-              Current: {r.currentFaculty} - {r.currentSlot}<br />
-              Desired: {r.desiredFaculty} - {r.desiredSlot}
-            </li>
-          ))
+        <label htmlFor="dept-select">Select Department: </label>
+        <select
+          id="dept-select"
+          value={selectedDept}
+          onChange={(e) => setSelectedDept(e.target.value)}
+          style={{ marginBottom: '20px' }}
+        >
+          <option value="">--Choose Department--</option>
+          {departments.map((dept) => (
+            <option key={dept} value={dept}>{dept}</option>
+          ))}
+        </select>
+
+        {selectedDept && (
+          <>
+            <h4>{selectedDept} Department Requests</h4>
+            <ul>
+              {filteredRequests.length === 0 ? (
+                <li>No requests yet in {selectedDept}</li>
+              ) : (
+                filteredRequests.map((r) => (
+                  <li key={r._id} style={{ marginBottom: '15px', borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>
+                    <strong>{r.name}</strong> ({r.email})<br />
+                    Subject: {r.subject}<br />
+                    Current: {r.currentFaculty} - {r.currentSlot}<br />
+                    Desired: {r.desiredFaculty} - {r.desiredSlot}
+                  </li>
+                ))
+              )}
+            </ul>
+          </>
         )}
-      </ul>
-    </>
-  )}
-</div>
-
+      </div>
     </div>
   );
 }
