@@ -6,6 +6,7 @@ import './App.css';
 
 
 
+
 function FormPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -17,9 +18,6 @@ function FormPage() {
     desiredFaculty: '',
     desiredSlot: '',
   });
-
-  
-const [message, setMessage] = useState('');
 
 const [requests, setRequests] = useState([]);
 const navigate = useNavigate();
