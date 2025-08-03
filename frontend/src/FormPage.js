@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 
 
-const [message, setMessage] = useState('');
 
 function FormPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +17,9 @@ function FormPage() {
     desiredFaculty: '',
     desiredSlot: '',
   });
+
+  
+const [message, setMessage] = useState('');
 
 const [requests, setRequests] = useState([]);
 const navigate = useNavigate();
