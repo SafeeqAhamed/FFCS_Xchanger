@@ -3,7 +3,7 @@
 ## 🌐 Live Demo
 
 The frontend of this project is live and hosted on **Netlify**:  
-🔗 [ffcs-xchanger.netlify.app](https://ffcs-xchanger.netlify.app)
+🔗 [ffcs-xchanger.netlify.app](https://ffcs-xchange.netlify.app/login)
 
 The backend is deployed on **Render**:  
 🔗 [https://ffcs-xchanger-1.onrender.com](https://ffcs-xchanger-1.onrender.com)
